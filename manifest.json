@@ -1,7 +1,7 @@
 {
   "name": "KC-390 Checklist",
   "short_name": "KC-390 CKL",
-  "start_url": "Fastlist_kc.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#007aff",

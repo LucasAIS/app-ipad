@@ -1,7 +1,7 @@
 const CACHE_NAME = 'kc390-checklist-v1';
 const urlsToCache = [
   '/',
-  'Fastlist_kc.html',
+  'index.html',
   'manifest.json',
   'apple-touch-icon.png'
 ];

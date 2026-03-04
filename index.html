@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KC-390 Checklist Interativo</title>
+    <style>
+            :root {
+                --bg-color: #121212;
+                --text-color: #e0e0e0;
+                --header-bg: #1e1e1e;
+                --accent-color: #007aff;
+                --success-color: #4cd964;
+                --warning-color: #ffcc00;
+                --danger-color: #ff3b30;
+                --border-color: #333;
+                --row-hover: #2c2c2c;
+                --checked-bg: #1a3b1a;
+                --checked-text-color: #888;
+                --section-bg: #333;
+                --section-text: #fff;
+                --note-bg: #1a1a1a;
+                --note-text: #aaa;
+                --note-border: #888;
+                --popup-bg: #2a2a2a;
+            }
+    
+            body.light-mode {
+                --bg-color: #f0f0f0;
+                --text-color: #333333;
+                --header-bg: #ffffff;
+                --accent-color: #007aff;
+                --success-color: #28a745;
+                --warning-color: #ffc107;
+                --danger-color: #dc3545;
+                --border-color: #dddddd;
+                --row-hover: #e9e9e9;
+                --checked-bg: #d4edda;
+                --checked-text-color: #555;
+                --section-bg: #e9ecef;
+                --section-text: #495057;
+                --note-bg: #e9e9e9;
+                --note-text: #555;
+                --note-border: #bbb;
+                --popup-bg: #f9f9f9;
+            }
+    
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 0;
+                -webkit-tap-highlight-color: transparent;
+                transition: background-color 0.3s, color 0.3s;
+            }
+    
+            /* Header e Navegação */
+            header {
+                background-color: var(--header-bg);
+                padding: 10px 15px;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+    
+            h1 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--accent-color); }
+            
+            .header-buttons { display: flex; align-items: center; gap: 10px; }
+    
+            .theme-btn, .reset-btn {
+                background: transparent;
+                border: 1px solid;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+    
+            .theme-btn {
+                border-color: var(--accent-color);
+                color: var(--accent-color);
+                font-size: 1.1rem;
+                padding: 2px 8px;
+            }
+    
+            .reset-btn { border-color: var(--danger-color); color: var(--danger-color); }
+    
+            /* Abas */
+            .tabs {
+                display: flex;
+                background-color: var(--header-bg);
+                border-bottom: 1px solid var(--border-color);
+            }
+            .tab {
+                flex: 1;
+                padding: 15px;
+                text-align: center;
+                cursor: pointer;
+                font-weight: 500;
+                color: #888;
+            }
+            .tab.active {
+                color: var(--accent-color);
+                border-bottom: 3px solid var(--accent-color);
+            }
+    
+            /* Estrutura Checklist */
+            .checklist-container { padding: 10px; padding-bottom: 50px; }
+            
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: var(--section-bg);
+                color: var(--section-text);
+                padding: 12px 15px;
+                margin-top: 10px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                user-select: none;
+                transition: background-color 0.2s;
+            }
+            .section-header:hover { background-color: var(--row-hover); }
+    
+            .section-header-title { flex-grow: 1; }
+            
+            .completion-indicator {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-weight: 700;
+                margin-left: 15px;
+                transition: all 0.3s;
+                min-width: 50px;
+                text-align: center;
+            }
+    
+            .section-header::after {
+                content: '▶';
+                font-size: 0.8em;
+                margin-left: 15px;
+                transition: transform 0.2s;
+            }
+    
+            .checklist-section.expanded > .section-header::after {
+                transform: rotate(90deg);
+            }
+    
+            .sub-items-container {
+                display: none;
+                padding-top: 5px;
+                padding-left: 10px;
+                border-left: 3px solid transparent;
+                margin-left: 12px;
+            }
+            
+            .checklist-section.expanded > .sub-items-container { display: block; }
+    
+            .check-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 10px;
+                border-bottom: 1px solid var(--border-color);
+                cursor: pointer;
+                transition: background-color 0.2s;
+                font-size: 1.1rem;
+            }
+    
+            .check-row:active { background-color: var(--row-hover); }
+            
+            .check-row.checked {
+                background-color: var(--checked-bg);
+                color: var(--checked-text-color);
+            }
+            .check-row.checked .response {
+                text-decoration: line-through;
+                color: var(--success-color);
+            }
+            .check-row.checked .challenge { text-decoration: line-through; }
+    
+            .challenge { 
+                flex: 3; 
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+            }
+            .info-icon {
+                font-size: 0.8rem;
+                font-weight: bold;
+                color: var(--accent-color);
+                background-color: var(--bg-color);
+                border: 1px solid var(--accent-color);
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-left: 10px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            .info-icon:hover { background-color: var(--row-hover); }
+    
+            .response { 
+                flex: 2; 
+                text-align: right; 
+                font-weight: 700; 
+                color: var(--accent-color); 
+                text-transform: uppercase;
+            }
+            .answered-by {
+                flex: 1;
+                text-align: right;
+                font-size: 0.9rem;
+                color: var(--note-text);
+                padding-left: 10px;
+            }
+    
+            /* Popup */
+            .popup-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                z-index: 200;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .popup-content {
+                background: var(--popup-bg);
+                padding: 20px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 500px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                position: relative;
+            }
+            .popup-close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            #popup-text {
+                white-space: pre-wrap;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+    
+            .hidden { display: none; }
+        </style>
+    </head>
+    <body>
+    
+    <header>
+        <h1>KC-390 CHECKLIST</h1>
+        <div class="header-buttons">
+            <button id="theme-toggle" class="theme-btn"></button>
+            <button class="reset-btn" onclick="resetChecklist()">RESETAR</button>
+        </div>
+    </header>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('normal')">NORMAL</div>
+        <div class="tab" onclick="switchTab('emergency')">MEMORY ITEMS</div>
+        <div class="tab" onclick="switchTab('airdrop')">AIRDROP</div>
+    </div>
+    
+    <div id="normal-procedures" class="checklist-container"></div>
+    <div id="emergency-procedures" class="checklist-container hidden"></div>
+    <div id="airdrop-procedures" class="checklist-container hidden"></div>
+    
+    <div id="notes-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <span id="popup-close-btn" class="popup-close">&times;</span>
+            <div id="popup-text"></div>
+        </div>
+    </div>
+    
+    <script>
+        // COLE AQUI OS DADOS DA SUA PLANILHA (formato TSV - Tab Separated Values)
+        // Certifique-se que a primeira linha contém os cabeçalhos: type, title, item_C, item_R, item_A, item_P
+        const tsvData = `type	title	item_C	item_R	item_A	item_P
+        NORMAL	BEFORE START	SIGNS Panel	SET	RSP	
+        NORMAL	BEFORE START	EMER LT Panel	SET	RSP	
+        NORMAL	BEFORE START	     EMER LT Knob	ON	RSP	Verify the EMER LT ON and the EMER LT NOT ARMED messages displayed on the CAS.
+        NORMAL	BEFORE START	     EMER LT Knob	ARMED	RSP	
+        NORMAL	BEFORE START	Ice Protection WING Button (1)	PUSH OUT	RSP	
+        NORMAL	BEFORE START	RECIRC CARGO Button (2)	PUSH OUT	RSP	
+        NORMAL	BEFORE START	Crew Oxygen Masks & Regulators	CHECK / 100%	LSP / RSP	
+        NORMAL	BEFORE START	Display Control Panel	SET	LSP / RSP	
+        NORMAL	BEFORE START	Reversionary Panel	SET	LSP / RSP	
+        NORMAL	BEFORE START	Audio Control Panels	AS REQUIRED	LSP / RSP	
+        NORMAL	BEFORE START	Flight Instruments	SET / X-CHECK	LSP / RSP	
+        NORMAL	BEFORE START	Fuel Quantity	CHECK	LSP / RSP	
+        NORMAL	BEFORE START	Standby Display Unit	SET	LSP 	
+        NORMAL	BEFORE START	ZEROIZE Switch	GUARDED DOWN	LSP 	
+        NORMAL	BEFORE START	PARKING BRAKE Switch	GUARDED ON	LSP 	
+        NORMAL	BEFORE START	CARGO DOOR / RAMP Panel	CHECK	LSP 	
+        NORMAL	BEFORE START	CMDS Panel	SET	LSP 	
+        NORMAL	BEFORE START	MISSION SYSTEM Panel	CHECK	LSP 	
+        NORMAL	BEFORE START	     MC2 Button (PUSH OUT) (3)	STRIPED BAR ILLUMINATED	RSP	
+        NORMAL	BEFORE START	GROUND PROXIMITY Panel	CHECK	RSP	
+        NORMAL	BEFORE START	EO / IR SYSTEM Panel	CHECK	RSP	
+        NORMAL	BEFORE START	Emergency Extension System Compartment	CHECK	RSP	
+        NORMAL	BEFORE START	LDG ALTERNATE CTRL Selector	NORMAL	RSP	
+        NORMAL	BEFORE START	FMS	SET	LSP	CAUTION: FMS TOLD FUNCTION DOES NOT HAVE OBSTACLE DATABASE. WHEN USING TOLD, PILOT MUST VERIFY APPLICABLE OBSTACLE CLEARANCE DATA BEFORE TAKEOFF.
+        NORMAL	BEFORE START	Takeoff Briefing	COMPLETED	LSP	
+        NORMAL	BEFORE START	Crew/Pax Briefing	COMPLETED	RSP	WARNING:THE USE OF EAR PROTECTION IS REQUIRED IN THE CARGO COMPARTMENT FOR MISSIONS LONGER THAN ONE HOUR.THE USE OF EAR PROTECTION IS REQUIRED IN THE CARGO COMPARTMENT IF THE RAMP OR PARATROOP DOOR IS OPEN.
+        NORMAL	BEFORE START	PITCH TRIM Switch	CHECK / SET	LSP	
+        NORMAL	BEFORE START	ROLL and YAW TRIM Switches	CHECK / ZERO	LSP	
+        NORMAL	BEFORE START	EICAS	CHECK	LSP	No messages should be presented in the EICAS, except for the ones listed below, that do not preclude engines starting: CAUTION: BRK FAIL/PBIT TIME EXPIRED. ADVISORY: BRK ALTERNATE FAIL/BRK NORMAL FAIL.
+        NORMAL	ENGINE START	PARK BRK ON Message	CHECK	LSP	
+        NORMAL	ENGINE START	Cargo Ramp / Cargo Door	AS REQUIRED	LSP	
+        NORMAL	ENGINE START	RED BCN Knob	BOTH	LSP	
+        NORMAL	ENGINE START	RAM AIR Knob	AUTO	LSP	
+        NORMAL	ENGINE START	Bleed Manifold Pressure Indication (associated engine)	CHECK	LSP	The recommended bleed duct pressure for engine start is supplied on Starter Air Pressure table in Supplementary Normal Checklist section.
+        NORMAL	ENGINE START	Associated POWER PLANT Knob	STOP, then RUN	LSP	
+        NORMAL	ENGINE START	Engine EICAS Indication	CHECK	LSP	
+        NORMAL	ENGINE START	Associated POWER PLANT Knob	START, then RUN	LSP	
+        NORMAL	ENGINE START	Engines Parameters	MONITOR	LSP / RSP	
+        NORMAL	ENGINE START	Repeat the sequence for the other engine.			
+        NORMAL	AFTER START	Ground Equipment	REMOVED	LSP	
+        NORMAL	AFTER START	APU	AS REQUIRED	RSP	
+        NORMAL	AFTER START	SLAT INHIB Button	AS REQUIRED	RSP	
+        NORMAL	AFTER START	SLAT / FLAP	SET	RSP	MOVE LEVER ONE POSITION AT A TIME. (4)	
+        NORMAL	AFTER START	CG x Pitch Trim Index	VERIFY	LSP / RSP	
+        NORMAL	AFTER START	Fuel PUMP 1B and 2B [2856] (5)	ON	RSP	
+        NORMAL	AFTER START	RADAR Switch	ON	LSP 	
+        NORMAL	AFTER START	EO / IR System (if installed)	ON	LSP	CAUTION:THE EO/IR POD MUST BE KEPT ENERGIZED AND SET TO STANDBY WHENEVER THE ENGINES ARE RUNNING.
+        NORMAL	AFTER START	EICAS	CHECK	LSP	
+        NORMAL	AFTER START	FUEL MGMT Page	ENTER	LSP	
+        NORMAL	AFTER START	FMS FOB MODE	SENSED, THEN CALC	LSP	
+        NORMAL	AFTER START	XPDR Page [2854, 2856] (3)	ENTER, THEN CHECK	RSP	
+        NORMAL	AFTER START	TCAS	AUTO	RSP	
+        NORMAL	AFTER START	STEERING DISARM Button	PRESS	LSP	
+        NORMAL	AFTER START	Flight Controls	CHECK	LSP / RSP	
+        NORMAL	AFTER START	Brake Pedals	CHECK	LSP	
+        NORMAL	AFTER START	STEERING ENGAGE Button	PRESS	LSP	
+        NORMAL	AFTER START	Doors	CLOSED AND LOCKED	LM	
+        NORMAL	AFTER START	Hatches	CHECK LOCKED	LM	
+        NORMAL	AFTER START	2 minutes after engine start:			
+        NORMAL	AFTER START	Ice Protection WING Button (1)	PUSH IN	RSP	
+        NORMAL	AFTER START	RECIRC CARGO Button (2)	AS REQUIRED	RSP	
+        NORMAL	AFTER START	EQUIP COOL OVRD Pushbutton (6)	PUSH OUT	RSP	
+        NORMAL	AFTER START	Wait 5 seconds			
+        NORMAL	AFTER START	EQUIP COOL OVRD Pushbutton (6)	PUSH IN	RSP	
+        NORMAL	BEFORE TAKEOFF	APU (7)	AS REQUIRED	RSP	Performed when cleared to line up on the runway.
+        NORMAL	BEFORE TAKEOFF	Mission Crew	NOTIFY	RSP	
+        NORMAL	BEFORE TAKEOFF	FUEL XFEED Knob	OFF	RSP	
+        NORMAL	BEFORE TAKEOFF	Autothrottle	AS REQUIRED	LSP	
+        NORMAL	BEFORE TAKEOFF	Brake Temperature	CHECK	LSP	
+        NORMAL	BEFORE TAKEOFF	EICAS	CHECK	LSP / RSP	
+        NORMAL	BEFORE TAKEOFF	Autobrake	AS REQUIRED	LSP	
+        NORMAL	BEFORE TAKEOFF	Takeoff Configuration	CHECK	RSP	
+        NORMAL	BEFORE TAKEOFF	TO / GA Button	PRESS	LSP	
+        NORMAL	BEFORE TAKEOFF	Lights	ON	RSP	
+        NORMAL	AFTER TAKEOFF	Landing Gear	CHECK UP	PM	
+        NORMAL	AFTER TAKEOFF	SLAT / FLAP Lever	RET	PM	
+        NORMAL	AFTER TAKEOFF	APU	AS REQUIRED	PM	
+        NORMAL	AFTER TAKEOFF	Fuel PUMP 1B and 2B [2856] (5)	AUTO	PM	
+        NORMAL	AFTER TAKEOFF	At Transition Altitude:			
+        NORMAL	AFTER TAKEOFF	Pressurization	CHECK	PM	
+        NORMAL	AFTER TAKEOFF	Altimeters	SET & XCHECK	PF & PM	
+        NORMAL	AFTER TAKEOFF	Above 10000 ft AFE:			
+        NORMAL	AFTER TAKEOFF	NO SMKG and FSTN BELTS Switches	AS REQUIRED	PM	
+        NORMAL	AFTER TAKEOFF	EXTERNAL LIGHTS Panel	AS REQUIRED	PM	
+        NORMAL	DESCENT	Approach Briefing	COMPLETE	PF	
+        NORMAL	DESCENT	Crew / Passengers	ADVISE	PM	
+        NORMAL	DESCENT	Autothrottle	AS REQUIRED	PF	
+        NORMAL	DESCENT	Landing Data	SET	PF & PM	
+        NORMAL	DESCENT	Pressurization	CHECK LFE	PF & PM	Below 10000 ft AFE:
+        NORMAL	DESCENT	Below 10000 ft AFE:			
+        NORMAL	DESCENT	NO SMKG and FSTN BELTS Switches	ON	PM	
+        NORMAL	DESCENT	EXTERNAL LIGHTS Panel	AS REQUIRED	PM	If airplane is equipped with AAR POD: (8)
+        NORMAL	DESCENT	AAR Hoses [2856] (8)	PERFORM VISUAL INSPECTION	PM	
+        NORMAL	APPROACH	Flight Crew / Passengers	ADVISE	PM	
+        NORMAL	APPROACH	Altimeters	SET & CHECK	PF & PM	
+        NORMAL	APPROACH	Approach Aids	SET & XCHECK	PF & PM	
+        NORMAL	APPROACH	SLAT INHIB Button	AS REQUIRED	PM	
+        NORMAL	APPROACH	SLAT / FLAP Lever	AS REQUIRED	PM	MOVE LEVER ONE POSITION AT A TIME. (4)
+        NORMAL	APPROACH	APU	AS REQUIRED	PM	
+        NORMAL	APPROACH	Autobrake Knob	AS REQUIRED	PF	
+        NORMAL	BEFORE LANDING	SPD Outer Knob	MAN	PM	
+        NORMAL	BEFORE LANDING	SPD Inner Knob	AS REQUIRED	PM	
+        NORMAL	BEFORE LANDING	FUEL XFEED Knob	OFF	PM	
+        NORMAL	BEFORE LANDING	OBIGGS TANKS VENT Button	AS REQUIRED	PM	
+        NORMAL	BEFORE LANDING	LDG GEAR Lever	DOWN	PF / PM	
+        NORMAL	BEFORE LANDING	SLAT INHIB Button	AS REQUIRED	PM	
+        NORMAL	BEFORE LANDING	SLAT / FLAP Lever	FULL	PF / PM	MOVE LEVER ONE POSITION AT A TIME. (4)
+        NORMAL	BEFORE LANDING	Airspeed	VREF FULL	PF	
+        NORMAL	BEFORE LANDING	Landing Lights	AS REQUIRED	PM	
+        NORMAL	AFTER LANDING	APU	AS REQUIRED	RSP	After vacate the runway:
+        NORMAL	AFTER LANDING	External Lights	AS REQUIRED	RSP	
+        NORMAL	AFTER LANDING	SLAT / FLAP Lever	RET	RSP	Start time after Thrust Levers in IDLE.
+        NORMAL	SHUTDOWN	Thrust Levers	IDLE (3 MIN)	LSP	
+        NORMAL	SHUTDOWN	PARKING BRAKE Switch	ON	LSP	NOTE: Cabin differential pressure shall be equal to zero before operating the doors.
+        NORMAL	SHUTDOWN	INERTIAL 1 and 2 Knobs	AS REQUIRED	LSP	NOTE: If the inertial knobs are turned OFF, the AUTOBRAKE FAIL and/or BRK SHORT DISPACH CAS messages may be displayed and can be disregarded. With airplane stopped, wait at least 5 seconds to turn off the electrical power. If the inertial knobs remain in NAV position, the stored heading function will not be available in the next airplane's power up.
+        NORMAL	SHUTDOWN	Electrical Power	AS REQUIRED	LSP	
+        NORMAL	SHUTDOWN	RADAR Switch	OFF	LSP	
+        NORMAL	SHUTDOWN	RECIRC CARGO Button (2)	PUSH OUT	RSP	
+        NORMAL	SHUTDOWN	EO / IR System (if installed)	OFF	LSP	
+        NORMAL	SHUTDOWN	POWER PLANT Knobs	STOP	LSP	
+        NORMAL	SHUTDOWN	RED BCN Knob	OFF	LSP	
+        NORMAL	SHUTDOWN	FSTN BELTS Switch	OFF	LSP	
+        EMERGENCY	CARGO AFR (FWD) (MID) SMOKE (S-3)	1. Crew Oxygen Masks	DON, EMER		
+        EMERGENCY	CARGO AFR (FWD) (MID) SMOKE (S-3)	2. Smoke Googles	DON		
+        EMERGENCY	FLIGHT DECK SMOKE EVACUATION (S-6)	1. Crew Oxygen Masks	DON, EMER		
+        EMERGENCY	FLIGHT DECK SMOKE EVACUATION (S-6)	2. Smoke Googles	DON		
+        EMERGENCY	SMOKE/FIRE/FUMES (S-8)	1. Crew Oxygen Masks	DON, EMER		
+        EMERGENCY	SMOKE/FIRE/FUMES (S-8)	2. Smoke Googles	DON		
+        EMERGENCY	ENGINE SEVERE DAMAGE OR SEPARATION (NAP-19)	1. Autothrottle	DISENGAGE		
+        EMERGENCY	ENGINE SEVERE DAMAGE OR SEPARATION (NAP-19)	Affected Engine:			
+        EMERGENCY	ENGINE SEVERE DAMAGE OR SEPARATION (NAP-19)	2. Associated Thrust Lever	IDLE		
+        EMERGENCY	ENGINE SEVERE DAMAGE OR SEPARATION (NAP-19)	3. POWER PLANT Knob	STOP		
+        EMERGENCY	ENGINE SEVERE DAMAGE OR SEPARATION (NAP-19)	4. FIRE PROTECTION Button	PUSH		
+        EMERGENCY	ENGINE ABNORMAL START (NAP-18)	Affected Engine:			
+        EMERGENCY	ENGINE ABNORMAL START (NAP-18)	1. POWER PLANT Knob	STOP		
+        EMERGENCY	DUAL ENGINE FAILURE (NAP-10)	1. Airspeed	MIN 260 KIAS		
+        EMERGENCY	APU FIRE (EAP 5-3)	1. APU FIRE PROTECTION Button	PUSH		
+        EMERGENCY	FLTCTRL N-MODE MISBEHAVIOR (NAP-20)	1. FCS MODE Button	PUSH (STRIPPED BAR ON)		
+        EMERGENCY	AIRDROP FAIL (NAP-5)	If performing Combat Offload:			
+        EMERGENCY	AIRDROP FAIL (NAP-5)	1. Thrust Levers	IDLE		
+        EMERGENCY	AIRDROP FAIL (NAP-5)	2. Brakes	APPLY SMOOTHLY		
+        EMERGENCY	JAMMED LOAD - COMBAT OFFLOAD (NAP-25)	If performing Combat Offload:			
+        EMERGENCY	JAMMED LOAD - COMBAT OFFLOAD (NAP-25)	1. Thrust Levers	IDLE		
+        EMERGENCY	JAMMED LOAD - COMBAT OFFLOAD (NAP-25)	2. Brakes	APPLY SMOOTHLY		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	1. Crew Oxygen Masks	DON, 100%		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	2. Communication	ESTABLISH		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	3. Thrust Levers	IDLE		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	4. SPEEDBRAKE Lever	FULL		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	5. Altitude	10000FT OR MEA, WHICHEVER IS HIGHER		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	6. Airspeed	MAX APPROPRIATE		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	7. FSTN BELTS Switch	ON		
+        EMERGENCY	CABIN ALTITUDE HI (EAP 10-3)	8. Transponder	7700		
+        EMERGENCY	EMERGENCY DESCENT (NAP-13)	1. Thrust Levers	IDLE		
+        EMERGENCY	EMERGENCY DESCENT (NAP-13)	2. SPEEDBRAKE Lever	FULL		
+        EMERGENCY	EMERGENCY DESCENT (NAP-13)	3. Airspeed	MAX APPROPRIATE		
+        EMERGENCY	EMERGENCY DESCENT (NAP-13)	4. Altitude	10000FT OR MEA, WHICHEVER IS HIGHER		
+        EMERGENCY	EMERGENCY DESCENT (NAP-13)	5. Transponder	7700		
+        EMERGENCY	JAMMED STICK (NAP-27)	1. Cross-Side Sidestick AP/PB Button	PRESS AND HOLD FOR 20 SECONDS		
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	If climb performance is required:			
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	1. DOWN LOCK RELEASE Button	PRESS		
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	2. LDG GEAR Lever	UP		
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	If landing gear still down:			
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	3. LDG ALTERNATE CTRL Switch	UP		
+        EMERGENCY	GEAR LEVER CANNOT BE MOVED UP (NAP-25)	4. LDG ALTERNATE CTRL Selector	ALTERNATE		
+        EMERGENCY	STEERING RUNWAY (NAP-26)	1. Nosewheel Steering	DISARM		
+        EMERGENCY	STEERING RUNWAY (NAP-26)	Use differential braking and rudder to steer the airplane.			
+        EMERGENCY	ENG 1 (2) FIRE	1. Autothrottle	DISENGAGE		
+        EMERGENCY	ENG 1 (2) FIRE	Affected Engine:			
+        EMERGENCY	ENG 1 (2) FIRE	2. Thrust Lever	IDLE		
+        EMERGENCY	ENG 1 (2) FIRE	3. POWER PLANT Knob	STOP		
+        EMERGENCY	ENG 1 (2) FIRE	4. FIRE PROTECTION Button	PUSH		
+        AIRDROP	BEFORE START	SIGNS Panel	SET	RSP	
+        AIRDROP	BEFORE START	EMER LT Panel	SET	RSP	
+        AIRDROP	BEFORE START	     EMER LT Knob	ON	RSP	Verify the EMER LT ON and the EMER LT NOT ARMED messages displayed on the CAS.
+        AIRDROP	BEFORE START	     EMER LT Knob	ARMED	RSP	
+        AIRDROP	BEFORE START	Ice Protection WING Button (1)	PUSH OUT	RSP	
+    `;
+    
+        function parseTsvData(tsv) {
+            const lines = tsv.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+            if (lines.length < 2) return { normal: [], emergency: [] , airdrop: []};
+
+            const headers = lines.shift().split('\t').map(h => h.trim());
+            const data = lines.map(line => {
+                const values = line.split('\t');
+                const obj = {};
+                headers.forEach((header, i) => {
+                    obj[header] = (values[i] || '').trim();
+                });
+                return obj;
+            });
+
+            const groupedData = { normal: [], emergency: [], airdrop: [] };
+            const titles = { normal: {}, emergency: {}, airdrop: {} };
+
+            for (const row of data) {
+                if (!row.type || !row.title) continue;
+                const type = row.type.toLowerCase();
+                const title = row.title;
+                
+                if (!titles[type][title]) {
+                    titles[type][title] = { title: title, items: [] };
+                    groupedData[type].push(titles[type][title]);
+                }
+                
+                titles[type][title].items.push({
+                    c: row.item_C,
+                    r: row.item_R,
+                    a: row.item_A,
+                    p: row.item_P
+                });
+            }
+            return groupedData;
+        }
+    
+    
+        function renderList(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+    
+            data.forEach((section, sIndex) => {
+                const sectionId = `${containerId}-section-${sIndex}`;
+                
+                const sectionDiv = document.createElement("div");
+                sectionDiv.className = "checklist-section";
+                sectionDiv.id = sectionId;
+    
+                const headerDiv = document.createElement("div");
+                headerDiv.className = "section-header";
+                headerDiv.onclick = () => toggleSection(sectionId);
+    
+                const headerTitle = document.createElement("span");
+                headerTitle.className = "section-header-title";
+                headerTitle.innerText = section.title;
+    
+                const indicator = document.createElement("span");
+                indicator.className = "completion-indicator";
+                
+                headerDiv.appendChild(headerTitle);
+                headerDiv.appendChild(indicator);
+                
+                const subItemsContainer = document.createElement("div");
+                subItemsContainer.className = "sub-items-container";
+                
+                section.items.forEach((item, iIndex) => {
+                    const uniqueId = `${containerId}-${sIndex}-${iIndex}`;
+                    const row = document.createElement("div");
+                    row.className = "check-row";
+                    row.id = uniqueId;
+                    row.onclick = () => toggleCheck(uniqueId, sectionId);
+    
+                    const challengeDiv = document.createElement("div");
+                    challengeDiv.className = "challenge";
+                    challengeDiv.innerText = item.c;
+    
+                    if (item.p && item.p.trim() !== "") {
+                        const infoIcon = document.createElement('span');
+                        infoIcon.className = 'info-icon';
+                        infoIcon.innerText = 'ⓘ';
+                        infoIcon.onclick = (event) => {
+                            event.stopPropagation();
+                            showPopup(item.p);
+                        };
+                        challengeDiv.appendChild(infoIcon);
+                    }
+    
+                    const responseDiv = document.createElement("div");
+                    responseDiv.className = "response";
+                    responseDiv.innerText = item.r || '';
+                    
+                    const answeredByDiv = document.createElement("div");
+                    answeredByDiv.className = "answered-by";
+                    answeredByDiv.innerText = item.a || '';
+    
+                    row.appendChild(challengeDiv);
+                    row.appendChild(responseDiv);
+                    row.appendChild(answeredByDiv);
+                    subItemsContainer.appendChild(row);
+                });
+    
+                sectionDiv.appendChild(headerDiv);
+                sectionDiv.appendChild(subItemsContainer);
+                container.appendChild(sectionDiv);
+            });
+        }
+    
+        function toggleSection(sectionId) {
+            document.getElementById(sectionId).classList.toggle('expanded');
+        }
+    
+        function toggleCheck(rowId, sectionId) {
+            const scrollY = window.scrollY;
+            
+            document.getElementById(rowId).classList.toggle("checked");
+            saveState();
+            updateSectionStatus(sectionId);
+    
+            setTimeout(() => {
+                window.scrollTo(0, scrollY);
+            }, 0);
+        }
+    
+        function updateSectionStatus(sectionId) {
+            const sectionEl = document.getElementById(sectionId);
+            if (!sectionEl) return;
+    
+            const headerEl = sectionEl.querySelector('.section-header');
+            const indicator = headerEl.querySelector('.completion-indicator');
+            const allRows = sectionEl.querySelectorAll('.check-row');
+            const checkedRows = sectionEl.querySelectorAll('.check-row.checked');
+    
+            if (allRows.length > 0 && allRows.length === checkedRows.length) {
+                headerEl.classList.add('completed');
+                indicator.textContent = 'COMPLETO';
+                indicator.style.backgroundColor = 'var(--success-color)';
+                indicator.style.color = 'white';
+            } else {
+                headerEl.classList.remove('completed');
+                indicator.textContent = `${checkedRows.length} / ${allRows.length}`;
+                indicator.style.backgroundColor = 'var(--warning-color)';
+                indicator.style.color = '#333';
+            }
+        }
+    
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.checklist-container').forEach(c => c.classList.add('hidden'));
+    
+            const targetTab = (tabName === 'normal') ? 1 : 
+                              (tabName === 'emergency') ? 2 : 3;
+            document.querySelector(`.tab:nth-child(${targetTab})`).classList.add('active');
+            document.getElementById(`${tabName}-procedures`).classList.remove('hidden');
+        }
+    
+        function resetChecklist() {
+            if (confirm("Tem certeza que deseja resetar todo o checklist?")) {
+                document.querySelectorAll('.check-row.checked').forEach(row => row.classList.remove('checked'));
+                localStorage.removeItem('kc390_checklist_state');
+                document.querySelectorAll('.checklist-section').forEach(section => updateSectionStatus(section.id));
+            }
+        }
+    
+        function saveState() {
+            const checkedItems = [];
+            document.querySelectorAll('.check-row.checked').forEach(el => checkedItems.push(el.id));
+            localStorage.setItem('kc390_checklist_state', JSON.stringify(checkedItems));
+        }
+    
+        function loadState() {
+            const saved = JSON.parse(localStorage.getItem('kc390_checklist_state'));
+            if (saved) {
+                saved.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('checked');
+                });
+            }
+            document.querySelectorAll('.checklist-section').forEach(section => {
+                if (section.id) updateSectionStatus(section.id);
+            });
+        }
+    
+        function showPopup(text) {
+            document.getElementById('popup-text').innerText = text;
+            document.getElementById('notes-popup').classList.remove('hidden');
+        }
+    
+        function hidePopup() {
+            document.getElementById('notes-popup').classList.add('hidden');
+        }
+    
+        // --- LÓGICA DO TEMA ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+    
+        function applyTheme(theme) {
+            const isLight = theme === 'light';
+            body.classList.toggle('light-mode', isLight);
+            themeToggle.textContent = isLight ? '☀️' : '🌙';
+            document.querySelectorAll('.sub-items-container').forEach(el => {
+                el.style.borderLeftColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+            });
+        }
+    
+        themeToggle.addEventListener('click', () => {
+            const newTheme = body.classList.contains('light-mode') ? 'dark' : 'light';
+            localStorage.setItem('kc390_theme', newTheme);
+            applyTheme(newTheme);
+        });
+    
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const parsedData = parseTsvData(tsvData);
+            renderList("normal-procedures", parsedData.normal);
+            renderList("emergency-procedures", parsedData.emergency);
+            
+            loadState();
+            
+            const savedTheme = localStorage.getItem('kc390_theme') || 'dark';
+            applyTheme(savedTheme);
+    
+            document.getElementById('popup-close-btn').addEventListener('click', hidePopup);
+            document.getElementById('notes-popup').addEventListener('click', (event) => {
+                if (event.target.id === 'notes-popup') {
+                    hidePopup();
+                }
+            });
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
+        });
+    </script>
+    
