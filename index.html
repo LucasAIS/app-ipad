@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -65,14 +66,15 @@
             padding: 10px 15px;
             position: sticky;
             top: 0;
-            z-index: 101; /* Acima do menu */
+            z-index: 101;
+            /* Acima do menu */
             border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         #menu-toggle {
             font-size: 1.5rem;
             background: none;
@@ -90,10 +92,15 @@
             text-align: center;
             flex-grow: 1;
         }
-        
-        .header-buttons { display: flex; align-items: center; gap: 10px; }
 
-        .theme-btn, .reset-btn {
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-btn,
+        .reset-btn {
             background: transparent;
             border: 1px solid;
             padding: 5px 10px;
@@ -101,14 +108,19 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
+
         .theme-btn {
             border-color: var(--accent-color);
             color: var(--accent-color);
             font-size: 1.1rem;
             padding: 2px 8px;
         }
-        .reset-btn { border-color: var(--danger-color); color: var(--danger-color); }
-        
+
+        .reset-btn {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
         /* --- Side Menu --- */
         #side-menu {
             position: fixed;
@@ -121,20 +133,22 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
             z-index: 102;
-            padding-top: 60px; /* Space for header */
+            padding-top: 60px;
+            /* Space for header */
             overflow-y: auto;
         }
+
         #side-menu.open {
             transform: translateX(0);
         }
-        
+
         #menu-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 100;
             opacity: 0;
             visibility: hidden;
@@ -155,9 +169,11 @@
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
         }
+
         .mission-link:hover {
             background-color: var(--row-hover);
         }
+
         .mission-link.active {
             background-color: var(--accent-color);
             color: white;
@@ -168,15 +184,17 @@
         #checklist-panel {
             padding-bottom: 50px;
         }
-        
+
         .checklist-tabs {
             display: flex;
             background-color: var(--header-bg);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
-            top: 61px; /* Height of header */
+            top: 61px;
+            /* Height of header */
             z-index: 99;
         }
+
         .checklist-tab {
             flex: 1;
             padding: 15px;
@@ -186,13 +204,16 @@
             color: #888;
             text-transform: uppercase;
         }
+
         .checklist-tab.active {
             color: var(--accent-color);
             border-bottom: 3px solid var(--accent-color);
         }
 
-        .checklist-container { padding: 10px; }
-        
+        .checklist-container {
+            padding: 10px;
+        }
+
         /* --- Estilos do Checklist (sem alterações) --- */
         .section-header {
             display: flex;
@@ -207,7 +228,11 @@
             cursor: pointer;
             user-select: none;
         }
-        .section-header-title { flex-grow: 1; }
+
+        .section-header-title {
+            flex-grow: 1;
+        }
+
         .completion-indicator {
             font-size: 0.8rem;
             padding: 4px 10px;
@@ -217,13 +242,18 @@
             min-width: 50px;
             text-align: center;
         }
+
         .section-header::after {
             content: '▶';
             font-size: 0.8em;
             margin-left: 15px;
             transition: transform 0.2s;
         }
-        .checklist-section.expanded > .section-header::after { transform: rotate(90deg); }
+
+        .checklist-section.expanded>.section-header::after {
+            transform: rotate(90deg);
+        }
+
         .sub-items-container {
             display: none;
             padding-top: 5px;
@@ -231,7 +261,11 @@
             border-left: 3px solid transparent;
             margin-left: 12px;
         }
-        .checklist-section.expanded > .sub-items-container { display: block; }
+
+        .checklist-section.expanded>.sub-items-container {
+            display: block;
+        }
+
         .check-row {
             display: flex;
             align-items: center;
@@ -240,49 +274,115 @@
             cursor: pointer;
             font-size: 1.1rem;
         }
+
         .check-row.checked {
             background-color: var(--checked-bg);
             color: var(--checked-text-color);
         }
-        .check-row.checked .response, .check-row.checked .challenge { text-decoration: line-through; }
-        .challenge { flex: 3; font-weight: 500; display: flex; align-items: center; }
+
+        .check-row.checked .response,
+        .check-row.checked .challenge {
+            text-decoration: line-through;
+        }
+
+        .challenge {
+            flex: 3;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
         .info-icon {
-            font-size: 0.8rem;
+            font-size: 1rem;
             font-weight: bold;
-            color: var(--accent-color);
-            background-color: var(--bg-color);
-            border: 1px solid var(--accent-color);
+            color: #333;
+            background-color: var(--warning-color);
+            border: 1px solid var(--warning-color);
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
             margin-left: 10px;
             cursor: pointer;
         }
-        .response { flex: 2; text-align: right; font-weight: 700; color: var(--accent-color); text-transform: uppercase; }
-        .answered-by { flex: 1; text-align: right; font-size: 0.9rem; color: var(--note-text); padding-left: 10px; }
+
+        .info-icon::before {
+            content: '!';
+        }
+
+        .response {
+            flex: 2;
+            text-align: right;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        .answered-by {
+            flex: 1;
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--note-text);
+            padding-left: 10px;
+        }
 
         /* Popup */
         .popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 200; display: flex;
-            justify-content: center; align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
         .popup-content {
-            background: var(--popup-bg); padding: 20px; border-radius: 10px;
-            width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative;
+            background: var(--popup-bg);
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
         }
+
         .popup-close {
-            position: absolute; top: 10px; right: 15px; font-size: 1.5rem;
-            font-weight: bold; cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
         }
-        #popup-text { white-space: pre-wrap; font-size: 1rem; line-height: 1.5; }
-        .hidden { display: none; }
+
+        #popup-text {
+            white-space: pre-wrap;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        #popup-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
-    </head>
-    <body>
+</head>
+
+<body>
 
     <header>
         <button id="menu-toggle">☰</button>
@@ -297,7 +397,7 @@
     <div id="side-menu">
         <!-- Mission links will be inserted here by JavaScript -->
     </div>
-    
+
     <main id="checklist-panel">
         <div class="checklist-tabs">
             <!-- Checklist type tabs will be inserted here -->
@@ -306,19 +406,19 @@
             <!-- Checklist items will be rendered here -->
         </div>
     </main>
-    
+
     <div id="notes-popup" class="popup-overlay hidden">
         <div class="popup-content">
             <span id="popup-close-btn" class="popup-close">&times;</span>
             <div id="popup-text"></div>
         </div>
     </div>
-    
+
     <script>
         // !! IMPORTANTE !!
         // Os dados do checklist são agora carregados a partir de 'checklist_data.tsv'.
         // Certifique-se que esse arquivo existe e que a primeira coluna é 'mission'.
-        
+
         let checklistData = {};
         let currentMission = '';
         let currentChecklistType = '';
@@ -329,7 +429,7 @@
 
             const headers = lines.shift().split('\t').map(h => h.trim());
             const missionIndex = headers.indexOf('mission');
-            
+
             if (missionIndex === -1) {
                 console.error("A coluna 'mission' não foi encontrada no arquivo TSV.");
                 return {};
@@ -340,7 +440,7 @@
             for (const line of lines) {
                 const values = line.split('\t');
                 const rowObj = {};
-                
+
                 headers.forEach((header, i) => {
                     rowObj[header] = (values[i] || '').trim();
                 });
@@ -361,13 +461,13 @@
                     section = { title: title, items: [] };
                     data[mission][type].push(section);
                 }
-                
+
                 section.items.push({ c: item_C, r: item_R, a: item_A, p: item_P });
             }
             return data;
         }
 
-    
+
         function renderList(containerSelector, data) {
             const container = document.querySelector(containerSelector);
             container.innerHTML = "";
@@ -375,39 +475,39 @@
 
             data.forEach((section, sIndex) => {
                 const sectionId = `${currentMission}-${currentChecklistType}-section-${sIndex}`;
-                
+
                 const sectionDiv = document.createElement("div");
                 sectionDiv.className = "checklist-section";
                 sectionDiv.id = sectionId;
-    
+
                 const headerDiv = document.createElement("div");
                 headerDiv.className = "section-header";
                 headerDiv.onclick = () => toggleSection(sectionId);
-    
+
                 const headerTitle = document.createElement("span");
                 headerTitle.className = "section-header-title";
                 headerTitle.innerText = section.title;
-    
+
                 const indicator = document.createElement("span");
                 indicator.className = "completion-indicator";
-                
+
                 headerDiv.appendChild(headerTitle);
                 headerDiv.appendChild(indicator);
-                
+
                 const subItemsContainer = document.createElement("div");
                 subItemsContainer.className = "sub-items-container";
-                
+
                 section.items.forEach((item, iIndex) => {
                     const uniqueId = `${currentMission}-${currentChecklistType}-${sIndex}-${iIndex}`;
                     const row = document.createElement("div");
                     row.className = "check-row";
                     row.id = uniqueId;
                     row.onclick = () => toggleCheck(uniqueId, sectionId);
-    
+
                     const challengeDiv = document.createElement("div");
                     challengeDiv.className = "challenge";
                     challengeDiv.innerText = item.c;
-    
+
                     if (item.p && item.p.trim() !== "") {
                         const infoIcon = document.createElement('span');
                         infoIcon.className = 'info-icon';
@@ -417,32 +517,32 @@
                         };
                         challengeDiv.appendChild(infoIcon);
                     }
-    
+
                     const responseDiv = document.createElement("div");
                     responseDiv.className = "response";
                     responseDiv.innerText = item.r || '';
-                    
+
                     const answeredByDiv = document.createElement("div");
                     answeredByDiv.className = "answered-by";
                     answeredByDiv.innerText = item.a || '';
-    
+
                     row.appendChild(challengeDiv);
                     row.appendChild(responseDiv);
                     row.appendChild(answeredByDiv);
                     subItemsContainer.appendChild(row);
                 });
-    
+
                 sectionDiv.appendChild(headerDiv);
                 sectionDiv.appendChild(subItemsContainer);
                 container.appendChild(sectionDiv);
             });
             loadState();
         }
-    
+
         function toggleSection(sectionId) {
             document.getElementById(sectionId).classList.toggle('expanded');
         }
-    
+
         function toggleCheck(rowId, sectionId) {
             const scrollY = window.scrollY;
             document.getElementById(rowId).classList.toggle("checked");
@@ -450,16 +550,16 @@
             updateSectionStatus(sectionId);
             setTimeout(() => window.scrollTo(0, scrollY), 0);
         }
-    
+
         function updateSectionStatus(sectionId) {
             const sectionEl = document.getElementById(sectionId);
             if (!sectionEl) return;
-    
+
             const headerEl = sectionEl.querySelector('.section-header');
             const indicator = headerEl.querySelector('.completion-indicator');
             const allRows = sectionEl.querySelectorAll('.check-row');
             const checkedRows = sectionEl.querySelectorAll('.check-row.checked');
-    
+
             if (allRows.length > 0 && allRows.length === checkedRows.length) {
                 headerEl.classList.add('completed');
                 indicator.textContent = 'COMPLETO';
@@ -472,7 +572,7 @@
                 indicator.style.color = '#333';
             }
         }
-    
+
         function switchChecklistType(type) {
             currentChecklistType = type;
             document.querySelectorAll('.checklist-tab').forEach(t => t.classList.remove('active'));
@@ -480,7 +580,7 @@
 
             renderList('.checklist-container', checklistData[currentMission][currentChecklistType]);
         }
-    
+
         function resetChecklist() {
             if (confirm("Tem certeza que deseja resetar o checklist da missão atual?")) {
                 const missionState = JSON.parse(localStorage.getItem('kc390_checklist_state')) || {};
@@ -489,7 +589,7 @@
                 loadState();
             }
         }
-    
+
         function saveState() {
             const currentState = JSON.parse(localStorage.getItem('kc390_checklist_state')) || {};
             const checkedItems = [];
@@ -497,7 +597,7 @@
             currentState[currentMission] = checkedItems;
             localStorage.setItem('kc390_checklist_state', JSON.stringify(currentState));
         }
-    
+
         function loadState() {
             const saved = JSON.parse(localStorage.getItem('kc390_checklist_state'));
             document.querySelectorAll('.check-row').forEach(row => row.classList.remove('checked'));
@@ -511,16 +611,16 @@
                 if (section.id) updateSectionStatus(section.id);
             });
         }
-        
+
         function showPopup(text) {
-            document.getElementById('popup-text').innerText = text;
+            document.getElementById('popup-text').innerHTML = text;
             document.getElementById('notes-popup').classList.remove('hidden');
         }
-    
+
         function hidePopup() {
             document.getElementById('notes-popup').classList.add('hidden');
         }
-        
+
         function toggleMenu() {
             document.getElementById('side-menu').classList.toggle('open');
             document.getElementById('menu-overlay').classList.toggle('open');
@@ -528,7 +628,7 @@
 
         function loadMission(missionName, closeMenu = true) {
             currentMission = missionName;
-            
+
             document.getElementById('mission-title').textContent = missionName.replace(/_/g, ' ');
             document.querySelectorAll('.mission-link').forEach(link => {
                 link.classList.toggle('active', link.dataset.mission === missionName);
@@ -536,7 +636,7 @@
 
             const tabsContainer = document.querySelector('.checklist-tabs');
             tabsContainer.innerHTML = '';
-            
+
             const missionTypes = Object.keys(checklistData[missionName] || {});
             missionTypes.forEach(type => {
                 const tab = document.createElement('div');
@@ -546,14 +646,14 @@
                 tab.onclick = () => switchChecklistType(type);
                 tabsContainer.appendChild(tab);
             });
-            
+
             if (missionTypes.length > 0) {
                 switchChecklistType(missionTypes[0]);
             } else {
-                 document.querySelector('.checklist-container').innerHTML = "<p>Nenhum checklist encontrado para esta missão.</p>";
+                document.querySelector('.checklist-container').innerHTML = "<p>Nenhum checklist encontrado para esta missão.</p>";
             }
 
-            if(closeMenu) {
+            if (closeMenu) {
                 toggleMenu();
             }
         }
@@ -561,22 +661,22 @@
         // --- LÓGICA DO TEMA ---
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
-    
+
         function applyTheme(theme) {
             const isLight = theme === 'light';
             body.classList.toggle('light-mode', isLight);
-            themeToggle.textContent = isLight ? '☀️' : '🌙';
+            themeToggle.textContent = isLight ? '🌙' : '☀️';
             document.querySelectorAll('.sub-items-container').forEach(el => {
                 el.style.borderLeftColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
             });
         }
-    
+
         themeToggle.addEventListener('click', () => {
             const newTheme = body.classList.contains('light-mode') ? 'dark' : 'light';
             localStorage.setItem('kc390_theme', newTheme);
             applyTheme(newTheme);
         });
-    
+
         // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
             fetch('checklist_data.tsv')
@@ -608,7 +708,7 @@
                     console.error('Erro ao carregar dados do checklist:', error);
                     document.querySelector('.checklist-container').innerHTML = `<p style="color:var(--danger-color); padding: 20px;">${error.message}</p>`;
                 });
-            
+
             const savedTheme = localStorage.getItem('kc390_theme') || 'dark';
             applyTheme(savedTheme);
 
@@ -628,4 +728,3 @@
             }
         });
     </script>
-    

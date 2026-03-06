@@ -1,0 +1,24 @@
+{
+  "name": "app-ipad",
+  "version": "1.0.0",
+  "description": "app para iPad",
+  "main": "sw.js",
+  "scripts": {
+    "start": "http-server -p 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucasAIS/app-ipad.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LucasAIS/app-ipad/issues"
+  },
+  "homepage": "https://github.com/LucasAIS/app-ipad#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
